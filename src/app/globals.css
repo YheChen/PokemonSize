@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f6f4ee;
+  --surface: #ffffff;
+  --ink: #16150f;
+  --ink-soft: #56534a;
+  --ink-faint: #8a867a;
+  --line: #ded9ca;
+  --line-strong: #16150f;
+  --accent: #ffd21e;
+  --accent-ink: #1a1707;
+  --accent-soft: #fff3c2;
+  --truth: #1d5cff;
+  --truth-soft: #dbe5ff;
+  --success: #1f9d5c;
+  --warn: #d98816;
+  --danger: #d24b3d;
+  --silhouette-filter: brightness(0);
+  --ghost-opacity: 0.42;
+  /* A ghost drawn over the art needs to tint it, not bury it. */
+  --ghost-opacity-front: 0.32;
+  --shadow-soft: 0 1px 2px rgb(22 21 15 / 0.06), 0 8px 24px -12px rgb(22 21 15 / 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #100f0c;
+    --surface: #1a1915;
+    --ink: #f4f1e8;
+    --ink-soft: #a5a091;
+    --ink-faint: #75705f;
+    --line: #2f2d25;
+    --line-strong: #f4f1e8;
+    --accent: #ffd21e;
+    --accent-ink: #1a1707;
+    --accent-soft: #3a3212;
+    --truth: #7ea6ff;
+    --truth-soft: #1d2947;
+    --success: #48c98a;
+    --warn: #eaa94a;
+    --danger: #f0705f;
+    /* Black silhouettes vanish on a dark ground, so invert them to near-white. */
+    --silhouette-filter: brightness(0) invert(1);
+    --ghost-opacity: 0.5;
+    --ghost-opacity-front: 0.38;
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-truth: var(--truth);
+  --color-truth-soft: var(--truth-soft);
+  --color-success: var(--success);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  min-width: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  /* Stops iOS bounce from fighting the resize gesture. */
+  overscroll-behavior-y: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--truth);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Sprites are decorative and must never start a native image drag. */
+.pokescale-art {
+  display: block;
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.pokescale-silhouette {
+  filter: var(--silhouette-filter);
+}
+
+/* The correct-size ghost: the sprite's alpha used as a mask, filled with the
+   truth colour. Gives an exact tinted copy at any size. */
+.pokescale-ghost--front {
+  opacity: var(--ghost-opacity-front);
+}
+
+.pokescale-ghost {
+  height: 100%;
+  width: 100%;
+  background-color: var(--truth);
+  opacity: var(--ghost-opacity);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  pointer-events: none;
+}
+
+.pokescale-dragging,
+.pokescale-dragging * {
+  cursor: nesw-resize !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.pokescale-ground {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--line-strong) 12%,
+    var(--line-strong) 88%,
+    transparent
+  );
+  opacity: 0.5;
+}
+
+.pokescale-marker {
+  border-top: 2px dashed currentColor;
+}
+
+@keyframes pokescale-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pokescale-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pokescale-rise {
+  animation: pokescale-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.pokescale-fade {
+  animation: pokescale-fade 220ms ease-out both;
+}
+
+.pokescale-reveal-art {
+  transition: filter 220ms ease-out, opacity 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Range input, themed consistently across engines. */
+.pokescale-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pokescale-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.pokescale-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.pokescale-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -9px;
+  height: 24px;
+  width: 24px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid var(--line-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.pokescale-range::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid var(--line-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.pokescale-range:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
