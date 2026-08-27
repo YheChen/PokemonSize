@@ -116,7 +116,6 @@ export function ResizablePokemon({
             label="Actual"
             value={formatHeightPrecise(round.target.heightMeters)}
             tone="truth"
-            align="right"
           />
           <SizeMarker
             pixelHeight={pixelHeight}
@@ -125,7 +124,6 @@ export function ResizablePokemon({
               round.reference.heightMeters * (pixelHeight / referencePixelHeight),
             )}
             tone="ink"
-            align="left"
             // On a close guess the two rules nearly coincide, so nudge this
             // label clear of the actual-size one instead of letting them stack.
             labelOffset={
@@ -185,7 +183,6 @@ interface SizeMarkerProps {
   label: string;
   value: string;
   tone: "truth" | "ink";
-  align: "left" | "right";
   /** Pixels to shift the label *down* off its rule; the rule never moves. */
   labelOffset?: number;
   layer?: number;
@@ -197,7 +194,6 @@ function SizeMarker({
   label,
   value,
   tone,
-  align,
   labelOffset = 0,
   layer = 4,
 }: SizeMarkerProps) {
@@ -206,9 +202,7 @@ function SizeMarker({
   return (
     <div
       aria-hidden="true"
-      className={`pokescale-marker pokescale-fade pointer-events-none absolute -inset-x-4 flex items-center ${color} ${
-        align === "right" ? "justify-end" : "justify-start"
-      }`}
+      className={`pokescale-marker pokescale-fade pointer-events-none absolute -inset-x-4 flex items-center justify-end ${color}`}
       // Zero height is load-bearing: `bottom` positions the box's lower edge,
       // but the rule is drawn with border-top. Any height at all would lift the
       // line off the measurement by exactly that much. The half-rule nudge then
