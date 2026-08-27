@@ -20,10 +20,6 @@ export function LandingScreen({ onPlay, ready }: LandingScreenProps) {
         reference.
       </p>
 
-      <p className="mt-6 font-semibold tracking-tight">
-        5 Pokémon. 5 guesses. 5,000 points.
-      </p>
-
       <button
         type="button"
         onClick={onPlay}
