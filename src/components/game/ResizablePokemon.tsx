@@ -202,7 +202,10 @@ function SizeMarker({
   return (
     <div
       aria-hidden="true"
-      className={`pokescale-marker pokescale-fade pointer-events-none absolute -inset-x-4 flex items-center justify-end ${color}`}
+      // The rule now runs the full width of the figure box and the badge is
+      // pushed past its right edge, so the dashes are long and nothing sits on
+      // top of the artwork.
+      className={`pokescale-marker pokescale-fade pointer-events-none absolute right-0 -left-8 flex items-center justify-end ${color}`}
       // Zero height is load-bearing: `bottom` positions the box's lower edge,
       // but the rule is drawn with border-top. Any height at all would lift the
       // line off the measurement by exactly that much. The half-rule nudge then
@@ -214,11 +217,16 @@ function SizeMarker({
       }}
     >
       <span
-        style={{ transform: `translateY(${labelOffset}px)` }}
-        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide whitespace-nowrap uppercase
+        // translateX(100%) clears the figure by exactly the badge's own width,
+        // whatever that turns out to be, so no fixed offset has to guess it.
+        style={{ transform: `translateX(100%) translateY(${labelOffset}px)` }}
+        className={`ml-1 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide whitespace-nowrap uppercase
           ${tone === "truth" ? "bg-truth text-white" : "bg-line text-ink-soft"}`}
       >
-        {label} · {value}
+        {/* A phone has no room for the wordy form beside the figure, and the
+            stats panel directly below names both values anyway. */}
+        <span className="hidden sm:inline">{label} · </span>
+        {value}
       </span>
     </div>
   );
