@@ -1,0 +1,20 @@
+# Vercel builds from source, so only ship what `next build` actually needs.
+# Note: this file REPLACES .gitignore for upload filtering, so everything
+# large or local-only has to be listed here explicitly.
+
+node_modules
+.next
+.git
+
+# Cached PokéAPI responses and source artwork (~300MB). The pipeline is only
+# ever run locally; the normalized sprites it produces live in public/.
+.pokemon-cache
+
+.vercel
+.env*
+*.tsbuildinfo
+.DS_Store
+
+# Local development tooling, not part of the app.
+.claude
+handover.json
