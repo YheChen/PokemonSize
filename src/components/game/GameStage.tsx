@@ -15,6 +15,8 @@ interface GameStageProps {
   stageRef: (node: HTMLDivElement | null) => void;
   round: Round | null;
   metrics: StageMetrics;
+  /** Tier-scaled height for this round's reference figure. */
+  referencePixelHeight: number;
   targetPixelHeight: number;
   correctPixelHeight: number;
   maxTargetPixelHeight: number;
@@ -32,6 +34,7 @@ export function GameStage({
   stageRef,
   round,
   metrics,
+  referencePixelHeight,
   targetPixelHeight,
   correctPixelHeight,
   maxTargetPixelHeight,
@@ -39,7 +42,7 @@ export function GameStage({
   preview = false,
   onTargetHeightChange,
 }: GameStageProps) {
-  const ready = round !== null && metrics.referencePixelHeight > 0;
+  const ready = round !== null && referencePixelHeight > 0;
 
   return (
     <div className="flex min-h-0 w-full flex-1 flex-col justify-center">
@@ -71,7 +74,7 @@ export function GameStage({
           >
             <StaticFigure
               pokemon={round.reference}
-              pixelHeight={metrics.referencePixelHeight}
+              pixelHeight={referencePixelHeight}
               variant={revealed && !preview ? "color" : "silhouette"}
             />
 
@@ -89,7 +92,7 @@ export function GameStage({
                 pixelHeight={targetPixelHeight}
                 minPixelHeight={metrics.minTargetPixelHeight}
                 maxPixelHeight={maxTargetPixelHeight}
-                referencePixelHeight={metrics.referencePixelHeight}
+                referencePixelHeight={referencePixelHeight}
                 revealed={revealed}
                 correctPixelHeight={correctPixelHeight}
                 onChange={onTargetHeightChange}
@@ -105,7 +108,7 @@ export function GameStage({
           style={{ gap: metrics.gap }}
         >
           <Caption
-            width={figureWidth(round.reference, metrics.referencePixelHeight)}
+            width={figureWidth(round.reference, referencePixelHeight)}
             eyebrow="Reference"
             name={round.reference.displayName}
             // Held back until the reveal: during the round the reference is a

@@ -38,6 +38,33 @@ export const FIGURE_GAP_MIN = 16;
  */
 export const STAGE_MAX_HEIGHT_PER_WIDTH = 0.8;
 
+/**
+ * Real-world size tiers, in metres. Roughly: below the knee, below the waist,
+ * about human height, taller than a person, and very much taller.
+ */
+export const SIZE_TIER_BOUNDS = [0.45, 0.9, 1.7, 3] as const;
+
+/**
+ * How large each tier draws its reference, as a share of the stage's safe
+ * reference height. A Wailord round should feel bigger than a Joltik round.
+ *
+ * Every value is at most 1, which is what keeps this cosmetic. The base height
+ * already guarantees a MAX_CLASSIC_RATIO target fits, so scaling the reference
+ * *down* can only leave more room, never less. No round is made unplayable and
+ * no fit rule has to change.
+ *
+ * The spread is heavily compressed on purpose: Joltik to Wailord is a 145x
+ * difference in reality, which no fixed stage can show while keeping the
+ * smaller one visible at all.
+ */
+export const REFERENCE_TIER_SCALE = {
+  xs: 0.42,
+  s: 0.58,
+  m: 0.75,
+  l: 0.88,
+  xl: 1,
+} as const;
+
 /** How far off the target starts, so the opening size never leaks the answer. */
 export const INITIAL_SCALE_MIN = 0.6;
 export const INITIAL_SCALE_MAX = 1.5;

@@ -36,6 +36,9 @@ export interface RoundResult {
   score: number;
 }
 
+/** Real-world size band, used only to pick how big to draw a reference. */
+export type SizeTier = "xs" | "s" | "m" | "l" | "xl";
+
 export type GamePhase = "landing" | "guessing" | "revealed" | "results";
 
 export type GameMode = "classic";

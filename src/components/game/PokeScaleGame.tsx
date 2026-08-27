@@ -17,13 +17,13 @@ import {
   createGame,
   maxScoreFor,
   maxTargetHeightForRound,
+  referencePixelHeightFor,
   resolveStageMetrics,
   scoreRound,
   totalScore as sumScores,
   type GameState,
   type Pokemon,
   type Round,
-  type StageMetrics,
 } from "@/lib/pokemon";
 
 /**
@@ -61,9 +61,15 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
   const demoRound = useMemo(() => buildDemoRound(pokemon), [pokemon]);
 
   const stageRound = state.phase === "landing" ? demoRound : currentRound;
-  const correctPixelHeight = useMemo(
-    () => correctHeightFor(stageRound, metrics),
+  // Scaled by the reference's own size tier, so a Wailord round draws bigger
+  // than a Joltik round. Everything downstream measures against this value.
+  const referencePixelHeight = useMemo(
+    () => (stageRound ? referencePixelHeightFor(stageRound, metrics) : 0),
     [stageRound, metrics],
+  );
+  const correctPixelHeight = useMemo(
+    () => correctHeightFor(stageRound, referencePixelHeight),
+    [stageRound, referencePixelHeight],
   );
   const maxTargetPixelHeight = useMemo(
     () =>
@@ -79,7 +85,6 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
   const lastReferenceHeightRef = useRef(0);
 
   useLayoutEffect(() => {
-    const referencePixelHeight = metrics.referencePixelHeight;
     if (!currentRound || referencePixelHeight <= 0) return;
 
     const key = `${gameKey}:${state.currentRoundIndex}:${currentRound.id}`;
@@ -110,6 +115,7 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
     gameKey,
     state.currentRoundIndex,
     metrics,
+    referencePixelHeight,
     correctPixelHeight,
     maxTargetPixelHeight,
   ]);
@@ -134,7 +140,7 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
       // The phase guard is what makes a double-click harmless.
       if (current.phase !== "guessing") return current;
       const round = current.rounds[current.currentRoundIndex];
-      if (!round || metrics.referencePixelHeight <= 0) return current;
+      if (!round || referencePixelHeight <= 0) return current;
 
       return {
         ...current,
@@ -144,12 +150,12 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
           scoreRound({
             round,
             guessedPixelHeight: targetPixelHeight,
-            referencePixelHeight: metrics.referencePixelHeight,
+            referencePixelHeight,
           }),
         ],
       };
     });
-  }, [targetPixelHeight, metrics.referencePixelHeight]);
+  }, [targetPixelHeight, referencePixelHeight]);
 
   const goToNextRound = useCallback(() => {
     setState((current) => {
@@ -203,7 +209,7 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
       <AssetPreloader urls={preloadUrls} />
 
       {state.phase === "landing" ? (
-        <LandingScreen onPlay={startGame} ready={metrics.referencePixelHeight > 0} />
+        <LandingScreen onPlay={startGame} ready={referencePixelHeight > 0} />
       ) : (
         <>
           <GameHeader
@@ -225,6 +231,7 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
           stageRef={stageRef}
           round={stageRound}
           metrics={metrics}
+          referencePixelHeight={referencePixelHeight}
           targetPixelHeight={stageTargetHeight}
           correctPixelHeight={correctPixelHeight}
           maxTargetPixelHeight={maxTargetPixelHeight}
@@ -242,7 +249,7 @@ export function PokeScaleGame({ pokemon }: PokeScaleGameProps) {
             max={maxTargetPixelHeight}
             targetName={currentRound.target.displayName}
             referenceName={currentRound.reference.displayName}
-            referencePixelHeight={metrics.referencePixelHeight}
+            referencePixelHeight={referencePixelHeight}
             disabled={false}
             onChange={setTargetPixelHeight}
           />
@@ -300,12 +307,12 @@ function DataError() {
   );
 }
 
-function correctHeightFor(round: Round | null, metrics: StageMetrics): number {
+function correctHeightFor(round: Round | null, referencePixelHeight: number): number {
   if (!round) return 0;
   return calculateCorrectPixelHeight({
     referenceHeightMeters: round.reference.heightMeters,
     targetHeightMeters: round.target.heightMeters,
-    referencePixelHeight: metrics.referencePixelHeight,
+    referencePixelHeight,
   });
 }
 

@@ -1,5 +1,7 @@
 import {
   FIGURE_GAP_FRACTION,
+  REFERENCE_TIER_SCALE,
+  SIZE_TIER_BOUNDS,
   FIGURE_GAP_MIN,
   MIN_TARGET_PIXEL_HEIGHT,
   REFERENCE_PIXEL_MAX,
@@ -7,7 +9,7 @@ import {
   REFERENCE_WIDTH_DIVISOR,
   STAGE_HEADROOM,
 } from "./constants";
-import type { Pokemon, Round, StageMetrics } from "./types";
+import type { Pokemon, Round, SizeTier, StageMetrics } from "./types";
 
 export function clamp(value: number, min: number, max: number): number {
   if (max < min) return min;
@@ -100,6 +102,27 @@ export function resolveStageMetrics(width: number, height: number): StageMetrics
   };
 }
 
+const SIZE_TIER_ORDER: readonly SizeTier[] = ["xs", "s", "m", "l", "xl"];
+
+/** Which real-world size band a Pokémon falls into. */
+export function sizeTier(heightMeters: number): SizeTier {
+  if (!isPositiveFinite(heightMeters)) return "m";
+  const index = SIZE_TIER_BOUNDS.findIndex((bound) => heightMeters < bound);
+  return SIZE_TIER_ORDER[index === -1 ? SIZE_TIER_ORDER.length - 1 : index] as SizeTier;
+}
+
+/**
+ * On-screen height of this round's reference: the stage's safe height, scaled
+ * down by the reference's own size tier.
+ *
+ * This reads the *reference's* height, never the target's, so it still cannot
+ * hint at the answer. A player who recognises the reference already knows how
+ * big it is; drawing it accordingly tells them nothing new.
+ */
+export function referencePixelHeightFor(round: Round, metrics: StageMetrics): number {
+  return metrics.referencePixelHeight * REFERENCE_TIER_SCALE[sizeTier(round.reference.heightMeters)];
+}
+
 /** Rendered width of a figure drawn at a given height. */
 export function figureWidth(pokemon: Pokemon, pixelHeight: number): number {
   if (!isPositiveFinite(pixelHeight) || !isPositiveFinite(pokemon.aspectRatio)) return 0;
@@ -112,7 +135,7 @@ export function figureWidth(pokemon: Pokemon, pixelHeight: number): number {
  * can already see, so this reveals nothing about the answer.
  */
 export function maxTargetHeightForRound(round: Round, metrics: StageMetrics): number {
-  const referenceWidth = figureWidth(round.reference, metrics.referencePixelHeight);
+  const referenceWidth = figureWidth(round.reference, referencePixelHeightFor(round, metrics));
   const widthBudget = Math.max(0, metrics.usableWidth - referenceWidth);
   const byWidth = isPositiveFinite(round.target.aspectRatio)
     ? widthBudget / round.target.aspectRatio
@@ -131,7 +154,7 @@ export function roundFitsStage(round: Round, metrics: StageMetrics): boolean {
   const correctPixelHeight = calculateCorrectPixelHeight({
     referenceHeightMeters: round.reference.heightMeters,
     targetHeightMeters: round.target.heightMeters,
-    referencePixelHeight: metrics.referencePixelHeight,
+    referencePixelHeight: referencePixelHeightFor(round, metrics),
   });
   if (correctPixelHeight <= 0) return false;
 
