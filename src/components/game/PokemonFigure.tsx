@@ -6,7 +6,7 @@ export type FigureVariant = "silhouette" | "color" | "ghost";
 
 interface PokemonFigureProps {
   pokemon: Pokemon;
-  /** Exact visible height in CSS pixels — the single source of scale truth. */
+  /** Exact visible height in CSS pixels: the single source of scale truth. */
   pixelHeight: number;
   variant: FigureVariant;
   /** Rendered on top of siblings; used to keep the guess above its ghost. */

@@ -3,9 +3,9 @@
     "name": "PokéScale",
     "what": "Browser game: resize a silhouetted Pokémon until it looks the right size next to a reference Pokémon on a shared ground line. 5 rounds, 5000 points, static, no backend.",
     "repoPath": "/Users/yanzhenchen/Desktop/GitHub Projects/Pokemon Size",
-    "remote": "none — not a git repository yet (git init has NOT been run)",
+    "remote": "https://github.com/YheChen/PokemonSize (the origin URL still uses the old Pokemon-Size name, which GitHub redirects)",
     "stack": "Next.js 16 (App Router, Turbopack) + React 19 + TypeScript 5 + Tailwind CSS 4, pnpm 10, Vitest 4, sharp 0.35",
-    "deploy": "Vercel-ready. Fully static prerender, no env vars, no serverless functions, no database."
+    "deploy": "Vercel project yhechens-projects/pokescale, live at https://pokescale.vercel.app. Fully static prerender, no env vars, no serverless functions, no database. The GitHub app is authorised, so a push to master deploys production automatically; `vercel --prod` is only needed for an out-of-band deploy."
   },
   "commands": {
     "install": "pnpm install",
@@ -25,34 +25,35 @@
       "Full game: landing with live silhouette preview, 5 rounds, pointer/keyboard/slider resize, lock-in, reveal with correct-size ghost + dashed markers, results, share grid, play again.",
       "Responsive 320px to desktop, light + dark themes, prefers-reduced-motion respected via CSS.",
       "lint, typecheck, test and production build all clean.",
-      "README.md written."
+      "README.md written.",
+      "Deployed to Vercel and connected to GitHub: pushes to master auto-deploy production."
     ],
     "queued": [
-      "git init + first commit (never run — the user has not asked yet).",
-      "Nothing else outstanding; the spec's Definition of Done is met."
+      "Nothing outstanding. The spec's Definition of Done is met and the game is live."
     ]
   },
   "currentWork": {
-    "branch": "n/a (no git repo)",
-    "inProgress": "none — implementation is complete and verified",
+    "branch": "master (work is committed directly to master, matching how the repo has been used)",
+    "inProgress": "none. Implementation is complete, deployed and verified.",
     "nextSteps": [
-      "If the user wants version control: git init, add a .gitignore-aware first commit. Note public/pokemon/normalized is 42MB of PNGs; consider whether to commit it (README assumes it IS committed so dev needs no asset rebuild).",
-      "Optional follow-ups the architecture already supports: daily challenge (generateGameRounds takes a deterministic `seed`), extra game modes (GameMode type + createGame({mode})), generation filters (each Pokemon record carries `generation`)."
+      "Optional follow-ups the architecture already supports: daily challenge (generateGameRounds takes a deterministic `seed`), extra game modes (GameMode type + createGame({mode})), generation filters (each Pokemon record carries `generation`).",
+      "Optional tidy-up: `git remote set-url origin https://github.com/YheChen/PokemonSize.git` to stop the redirect notice on push."
     ]
   },
   "gotchas": [
-    "SCALE CORRECTNESS IS THE TOP INVARIANT. Figures get an explicit pixel height plus a width from the sprite aspect ratio. Never use transform: scale() on a figure and never use object-fit: contain on the sprite — both would make the measured guess differ from the drawn size.",
+    "SCALE CORRECTNESS IS THE TOP INVARIANT. Figures get an explicit pixel height plus a width from the sprite aspect ratio. Never use transform: scale() on a figure and never use object-fit: contain on the sprite; both would make the measured guess differ from the drawn size.",
     "Sprites MUST stay alpha-cropped. The whole point of build-pokemon-assets.ts is that box height == visible Pokémon height. Swapping in raw PokéAPI artwork silently breaks every comparison.",
-    "referencePixelHeight must never depend on the round, or its size leaks the answer. It is min(stageHeight*0.38, usableWidth/(1+MAX_CLASSIC_RATIO), 300) — both terms round-independent.",
+    "referencePixelHeight must never depend on the round, or its size leaks the answer. It is min(stageHeight*0.38, usableWidth/(1+MAX_CLASSIC_RATIO), 300), and both terms are round-independent.",
     "MAX_CLASSIC_RATIO (2.45) and REFERENCE_STAGE_FRACTION (0.38) are coupled: their product must stay under STAGE_HEADROOM (0.94) so a largest-legal target still fits. Raising the ratio ceiling shrinks the reference in every round. A sizing test asserts this.",
     "generateGameRounds takes an optional `stage` and only emits pairs that fit it. Without it, rounds are still ratio-bounded but assume a generic stage.",
     "Percentage heights need a definite parent: the stage chain is flex-1 + min-h-0 all the way down. An h-full child of an auto-height parent silently collapses (this bit once already).",
     "The silhouette->colour CSS transition must only be attached to the colour variant. Attaching it to the silhouette makes the NEXT round fade in from full colour and briefly show the answer. The <img> is also keyed by pokemon.id for the same reason.",
-    "eslint-config-next 16 ships native flat config — import 'eslint-config-next/core-web-vitals' directly. FlatCompat + @eslint/eslintrc throws 'Converting circular structure to JSON'.",
+    "eslint-config-next 16 ships native flat config, so import 'eslint-config-next/core-web-vitals' directly. FlatCompat + @eslint/eslintrc throws 'Converting circular structure to JSON'.",
     "@next/next/no-img-element is deliberately disabled: next/image would re-encode and re-letterbox the normalized sprites, which is exactly what the pipeline exists to prevent.",
-    "sharp in this environment ignores png({palette:true}) — palette quantization is a silent no-op, so PNG sizes are what they are (~40KB each).",
+    "sharp in this environment ignores png({palette:true}); palette quantization is a silent no-op, so PNG sizes are what they are (~40KB each).",
     "React state is async: when testing via devtools, reading aria-valuenow synchronously after dispatching a keydown returns the OLD value. Wait a tick.",
-    "The browser automation harness could not deliver real key events to the page; keyboard handling was verified by dispatching KeyboardEvents and awaiting a tick."
+    "The browser automation harness could not deliver real key events to the page; keyboard handling was verified by dispatching KeyboardEvents and awaiting a tick.",
+    "House style: no em dashes anywhere, in UI copy, code comments or docs. Use commas, colons or a second sentence instead."
   ],
   "openQuestions": []
 }

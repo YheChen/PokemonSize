@@ -1,13 +1,16 @@
-/** Human-readable height. Display only — scoring always stays in metres. */
+/** Shown wherever a value is missing or could not be computed. */
+const NO_VALUE = "-";
+
+/** Human-readable height. Display only; scoring always stays in metres. */
 export function formatHeight(meters: number): string {
-  if (!Number.isFinite(meters) || meters <= 0) return "—";
+  if (!Number.isFinite(meters) || meters <= 0) return NO_VALUE;
   if (meters < 1) return `${Math.round(meters * 100)} cm`;
   return `${meters.toFixed(meters < 10 ? 1 : 0)} m`;
 }
 
 /** Two-decimal metres, for side-by-side guess/actual comparisons. */
 export function formatHeightPrecise(meters: number): string {
-  if (!Number.isFinite(meters) || meters <= 0) return "—";
+  if (!Number.isFinite(meters) || meters <= 0) return NO_VALUE;
   return `${meters.toFixed(2)} m`;
 }
 

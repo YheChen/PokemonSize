@@ -69,7 +69,7 @@ export function calculateGuessedHeightMeters({
 }
 
 /**
- * Reference height is a pure function of the stage — never of the round — so
+ * Reference height is a pure function of the stage, never of the round, so
  * the reference size can't hint at how big the answer is.
  */
 export function calculateReferencePixelHeight(stageHeight: number, usableWidth: number): number {
@@ -108,8 +108,8 @@ export function figureWidth(pokemon: Pokemon, pixelHeight: number): number {
 
 /**
  * How tall the player may drag this round's target. Bounded by the stage height
- * and by whatever width the reference leaves behind — both facts the player can
- * already see, so this reveals nothing about the answer.
+ * and by whatever width the reference leaves behind. Both are facts the player
+ * can already see, so this reveals nothing about the answer.
  */
 export function maxTargetHeightForRound(round: Round, metrics: StageMetrics): number {
   const referenceWidth = figureWidth(round.reference, metrics.referencePixelHeight);

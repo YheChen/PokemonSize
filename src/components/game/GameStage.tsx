@@ -26,7 +26,7 @@ interface GameStageProps {
 
 /**
  * The playfield. Both Pokémon are anchored to the same floor so that only their
- * heights ever differ — the comparison the whole game rests on.
+ * heights ever differ. That comparison is what the whole game rests on.
  */
 export function GameStage({
   stageRef,

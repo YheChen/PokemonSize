@@ -8,12 +8,12 @@ dragging. Make the silhouette the size you think it really is next to the
 reference, lock it in, and find out how close you were. Five rounds, 5,000
 points.
 
-No numbers to type, no accounts, no backend — the whole game is static.
+No numbers to type, no accounts, no backend. The whole game is static.
 
 ## How to Play
 
 1. Press **Play**.
-2. Drag the grip at the target's upper-right corner — right or up to grow,
+2. Drag the grip at the target's upper-right corner: right or up to grow,
    left or down to shrink. The slider and `−` / `+` buttons do the same job,
    and arrow keys work when the grip is focused (`Shift` for bigger steps).
 3. Press **Lock it in**.
@@ -46,7 +46,7 @@ development never needs to rebuild assets.
 ## Pokémon Asset Pipeline
 
 `scripts/build-pokemon-assets.ts` fetches every default-form species from
-PokéAPI, downloads its official artwork, and — the part that matters —
+PokéAPI, downloads its official artwork, and, most importantly,
 **crops each sprite to the bounding box of its non-transparent pixels**.
 
 This is not a file-size optimisation. Source artwork carries different amounts
@@ -73,7 +73,7 @@ src/
   app/                     layout, page, global styles
   components/game/         PokeScaleGame (state) + presentational pieces
   hooks/                   useElementSize, usePointerResize
-  lib/pokemon/             all scale, scoring and round logic — no React
+  lib/pokemon/             all scale, scoring and round logic, no React
   data/                    pokemon.generated.json
 scripts/                   asset pipeline
 ```
@@ -106,8 +106,8 @@ Two invariants keep the game honest:
 Round generation is handed the measured stage and only emits pairs whose
 correct size is reachable and fully visible on it, so the answer is always
 something the player can actually reach. Classic pairs sit between 0.25× and
-2.45×; that ceiling is tied to the layout constants above — widening it would
-shrink the reference in every other round.
+2.45×; that ceiling is tied to the layout constants above, and widening it
+would shrink the reference in every other round.
 
 `generateGameRounds` accepts an optional `seed` and is fully deterministic,
 which is what a daily challenge would need later.
@@ -122,13 +122,13 @@ score    = round(1000 × accuracy²)               // max 1000 per round
 The squared curve means precision pays: 95% accuracy scores 903, but 80%
 scores only 640. A perfect game is 5,000.
 
-Share grids bucket accuracy into 🟩 ≥95%, 🟨 ≥85%, 🟧 ≥70%, 🟥 below — and
+Share grids bucket accuracy into 🟩 ≥95%, 🟨 ≥85%, 🟧 ≥70%, 🟥 below, and
 deliberately name no Pokémon, so sharing a result spoils nothing.
 
 ## Deployment
 
 Static output with no runtime dependencies, so any host works. On Vercel,
-import the repository and accept the defaults — no environment variables, no
+import the repository and accept the defaults: no environment variables, no
 database, no serverless functions.
 
 ```bash

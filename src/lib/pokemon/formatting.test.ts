@@ -18,11 +18,11 @@ describe("formatHeight", () => {
   });
 
   it("never renders NaN, Infinity or undefined", () => {
-    expect(formatHeight(Number.NaN)).toBe("—");
-    expect(formatHeight(Number.POSITIVE_INFINITY)).toBe("—");
-    expect(formatHeight(0)).toBe("—");
-    expect(formatHeight(-1)).toBe("—");
-    expect(formatHeightPrecise(Number.NaN)).toBe("—");
+    expect(formatHeight(Number.NaN)).toBe("-");
+    expect(formatHeight(Number.POSITIVE_INFINITY)).toBe("-");
+    expect(formatHeight(0)).toBe("-");
+    expect(formatHeight(-1)).toBe("-");
+    expect(formatHeightPrecise(Number.NaN)).toBe("-");
   });
 });
 

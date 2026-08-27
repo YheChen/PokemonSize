@@ -102,8 +102,8 @@ export interface GenerateRoundsOptions {
 
 /**
  * Builds a playable game. Every pair is guaranteed to sit inside the Classic
- * ratio window, and no Pokémon appears twice in the same game — as reference or
- * as target — so nothing carries over between rounds.
+ * ratio window, and no Pokémon appears twice in the same game, as reference or
+ * as target, so nothing carries over between rounds.
  */
 export function generateGameRounds({
   pokemon,

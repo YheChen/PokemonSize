@@ -30,7 +30,7 @@ export interface RoundResult {
   actualHeightMeters: number;
   guessedPixelHeight: number;
   correctPixelHeight: number;
-  /** guessed / actual — above 1 means the player made it too big. */
+  /** guessed / actual. Above 1 means the player made it too big. */
   ratioError: number;
   accuracy: number;
   score: number;

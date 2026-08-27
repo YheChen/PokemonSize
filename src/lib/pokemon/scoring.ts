@@ -66,6 +66,6 @@ export function summariseTotal(totalScore: number, maxScore: number): string {
   if (share >= 0.85) return "Excellent eye for scale.";
   if (share >= 0.7) return "Solid sense of scale.";
   if (share >= 0.5) return "Getting the hang of it.";
-  if (share >= 0.3) return "Room to grow — literally.";
+  if (share >= 0.3) return "Room to grow, literally.";
   return "Scale is hard. Try another five.";
 }

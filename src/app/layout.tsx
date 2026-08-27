@@ -9,7 +9,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const title = "PokéScale — How Big Are Pokémon?";
+const title = "PokéScale: How Big Are Pokémon?";
 const description =
   "Test how well you know Pokémon sizes by resizing them against each other. Five rounds, five thousand points.";
 
