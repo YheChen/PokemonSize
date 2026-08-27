@@ -177,6 +177,8 @@ export function ResizablePokemon({
 
 /** Vertical room a marker label needs to stay clear of its neighbour. */
 const LABEL_CLEARANCE = 22;
+/** Thickness of the dashed rule, from .pokescale-marker's border-top. */
+const MARKER_RULE_WIDTH = 2;
 
 interface SizeMarkerProps {
   pixelHeight: number;
@@ -204,13 +206,21 @@ function SizeMarker({
   return (
     <div
       aria-hidden="true"
-      className={`pokescale-marker pokescale-fade pointer-events-none absolute -inset-x-4 flex ${color} ${
+      className={`pokescale-marker pokescale-fade pointer-events-none absolute -inset-x-4 flex items-center ${color} ${
         align === "right" ? "justify-end" : "justify-start"
       }`}
-      style={{ bottom: pixelHeight, zIndex: layer }}
+      // Zero height is load-bearing: `bottom` positions the box's lower edge,
+      // but the rule is drawn with border-top. Any height at all would lift the
+      // line off the measurement by exactly that much. The half-rule nudge then
+      // centres the stroke on the height instead of resting it on top.
+      style={{
+        bottom: pixelHeight - MARKER_RULE_WIDTH / 2,
+        height: 0,
+        zIndex: layer,
+      }}
     >
       <span
-        style={{ transform: `translateY(calc(-50% + ${labelOffset}px))` }}
+        style={{ transform: `translateY(${labelOffset}px)` }}
         className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide whitespace-nowrap uppercase
           ${tone === "truth" ? "bg-truth text-white" : "bg-line text-ink-soft"}`}
       >
