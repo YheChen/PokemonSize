@@ -16,7 +16,8 @@ export function LandingScreen({ onPlay, ready }: LandingScreenProps) {
       </p>
 
       <p className="mx-auto mt-6 max-w-sm text-balance text-ink-soft">
-        Resize one Pokémon until you think it&rsquo;s the correct size next to another.
+        Resize one Pokémon until you think it&rsquo;s the correct size relative to the
+        reference.
       </p>
 
       <p className="mt-6 font-semibold tracking-tight">
